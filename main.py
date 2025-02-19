@@ -1,6 +1,7 @@
 import os
 import logging
 import telebot
+from telebot import types
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 
@@ -9,6 +10,7 @@ GROUP_CHAT_ID = "-1002296234497"
 ADMIN_ID = 7077167971
 
 telebot.logger.setLevel(logging.INFO)
+
 bot = telebot.TeleBot(BOT_TOKEN)
 uzbekistan_tz = pytz.timezone("Asia/Tashkent")
 
