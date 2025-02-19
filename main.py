@@ -84,4 +84,4 @@ for time_str in SENDING_TIMES:
     scheduler.add_job(send_photos, "cron", hour=hour, minute=minute, timezone=uzbekistan_tz)
 
 scheduler.start()
-bot.infinity_polling()
+# bot.infinity_polling()
