@@ -4,7 +4,7 @@ import requests
 from flask import Flask, request
 from main import bot, BOT_TOKEN, types
 
-WEBHOOK_URL = "https://uzbekistan-weather-telebot-private.onrender.com/webhook"
+WEBHOOK_URL = "https://image-sender-telebot.onrender.com/webhook"
 
 app = Flask(__name__)
 
