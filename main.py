@@ -16,6 +16,8 @@ bot = telebot.TeleBot(BOT_TOKEN, parse_mode="MARKDOWN")
 
 uzbekistan_tz = pytz.timezone("Asia/Tashkent")
 
+os.environ["TZ"] = "Asia/Tashkent"
+
 IMAGE_FOLDER = "photos"
 
 SENDING_TIMES = [
