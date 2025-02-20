@@ -70,20 +70,36 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
-    os.path.join(IMAGE_FOLDER)
-    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
-    
-    if photo_count == 0:
-        bot.answer_callback_query(call.message.chat.id, "Rasmlar mavjud emas", show_alert=True)
-    else:
+    try:
+        if not os.path.exists(IMAGE_FOLDER):
+            bot.answer_callback_query(call.id, "Papka topilmadi", show_alert=True)
+            return
+
+        photo_count = len([
+            img for img in os.listdir(IMAGE_FOLDER) 
+            if img.lower().endswith(("jpg", "jpeg", "png", "webp"))
+        ])
+        
+        if photo_count == 0:
+            bot.answer_callback_query(call.id, "Rasmlar mavjud emas", show_alert=True)
+            return
+            
         post_count = photo_count // 9
         
         if call.data == "photo_count":
-            bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
+            bot.answer_callback_query(
+                call.id,
+                f"📸 Qolgan rasmlar: {photo_count}",
+                show_alert=True
+            )
         elif call.data == "post_count":
-            bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
-
-    bot.answer_callback_query(call.id)
+            bot.answer_callback_query(
+                call.id,
+                f"📤 Post qilishga yetadi: {post_count} marta",
+                show_alert=True
+            )
+    except Exception as e:
+        bot.answer_callback_query(call.id, f"Xatolik yuz berdi: {str(e)}", show_alert=True)
 
 @bot.message_handler(commands=['delete'])
 def delete_all_photos(message: types.Message):
