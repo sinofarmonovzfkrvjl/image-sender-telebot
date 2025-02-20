@@ -67,6 +67,11 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def refresh_status(call: types.CallbackQuery):
+    print("handled")
+    bot.send_message(call.message.chat.id, "handled")
+
+    os.path.join(IMAGE_FOLDER)
+
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
     post_count = photo_count // 9  
 
@@ -74,6 +79,7 @@ def refresh_status(call: types.CallbackQuery):
         bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
     elif call.data == "post_count":
         bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
+
 
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message: types.Message):
