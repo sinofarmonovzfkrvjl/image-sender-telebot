@@ -9,7 +9,7 @@ from telebot import types
 BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
 GROUP_CHAT_ID = "-1002296234497"
 
-ADMIN_ID = [7077167971, 5230484991, 6327823559, 7583614105]
+ADMIN_ID = [7077167971, 6327823559, 7583614105]
 
 telebot.logger.setLevel(logging.INFO)
 
@@ -105,4 +105,4 @@ for time_str in SENDING_TIMES:
 
 
 scheduler.start()
-# bot.infinity_polling()
+bot.infinity_polling()
