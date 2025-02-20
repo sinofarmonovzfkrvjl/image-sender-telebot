@@ -28,7 +28,7 @@ os.path.join(IMAGE_FOLDER)
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        bot.send_message(message.chat.id, "❌ Siz Admin emassiz")
+        bot.send_message(message.chat.id, "Siz Admin emassiz")
         return
     else:
         send_photos()
@@ -55,12 +55,12 @@ def send_photos():
             bot.send_message(ADMIN_ID, "ERROR")
 
     except Exception as e:
-        logging.error(f"❌ Error sending photos: {e}")
+        logging.error(f"Error sending photos: {e}")
 
 @bot.message_handler(commands=["start"])
 def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        bot.send_message(message.chat.id, "❌ Siz Admin emassiz")
+        bot.send_message(message.chat.id, "Siz Admin emassiz")
     else:
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
@@ -70,41 +70,29 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
-    try:
-        if not os.path.exists(IMAGE_FOLDER):
-            bot.answer_callback_query(call.id, "Papka topilmadi", show_alert=True)
-            return
+    os.path.join(IMAGE_FOLDER)
+    
+    if not os.path.exists(IMAGE_FOLDER):
+        os.makedirs(IMAGE_FOLDER)
 
-        photo_count = len([
-            img for img in os.listdir(IMAGE_FOLDER) 
-            if img.lower().endswith(("jpg", "jpeg", "png", "webp"))
-        ])
-        
-        if photo_count == 0:
-            bot.answer_callback_query(call.id, "Rasmlar mavjud emas", show_alert=True)
-            return
-            
+    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
+    
+    if photo_count == 0:
+        bot.answer_callback_query(call.id, "Rasmlar mavjud emas", show_alert=True)
+    else:
         post_count = photo_count // 9
         
         if call.data == "photo_count":
-            bot.answer_callback_query(
-                call.id,
-                f"📸 Qolgan rasmlar: {photo_count}",
-                show_alert=True
-            )
+            bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
         elif call.data == "post_count":
-            bot.answer_callback_query(
-                call.id,
-                f"📤 Post qilishga yetadi: {post_count} marta",
-                show_alert=True
-            )
-    except Exception as e:
-        bot.answer_callback_query(call.id, f"Xatolik yuz berdi: {str(e)}", show_alert=True)
+            bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
+
+    bot.answer_callback_query(call.id)
 
 @bot.message_handler(commands=['delete'])
 def delete_all_photos(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        bot.send_message(message.chat.id, "❌ Siz Admin emassiz")
+        bot.send_message(message.chat.id, "Siz Admin emassiz")
         return
     else:
         photos = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER)]
