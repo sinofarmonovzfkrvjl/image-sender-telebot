@@ -45,9 +45,9 @@ def send_photos():
 
         for img in images:
             with open(img, "rb") as file:
-                media_group.append(telebot.types.InputMediaPhoto(file.read()))
+                media_group.append(telebot.types.InputMediaPhoto(file.read(), caption="Rasmlar"))
 
-        bot.send_media_group(GROUP_CHAT_ID, media_group)
+        bot.send_media_group(chat_id=GROUP_CHAT_ID, media=media_group)
 
         for img in images:
             os.remove(img)
