@@ -1,17 +1,18 @@
 import os
 import logging
 import telebot
-from telebot import types
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY"
+BOT_TOKEN = "7436824817:AAE6g7Ecj-B0HVWT58t_VefKFDMibk4BfMU"
 GROUP_CHAT_ID = "-1002296234497"
 ADMIN_ID = 7077167971
 
 telebot.logger.setLevel(logging.INFO)
 
 bot = telebot.TeleBot(BOT_TOKEN)
+
 uzbekistan_tz = pytz.timezone("Asia/Tashkent")
 
 IMAGE_FOLDER = "photos"
@@ -29,36 +30,57 @@ def send_photos_command(message):
     if message.from_user.id != ADMIN_ID:
         bot.reply_to(message, "You are not authorized to use this command!")
         return
-
     send_photos()
 
 def send_photos():
     try:
         images = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))]
 
-        if len(images) == 0:
+        if not images:
             bot.send_message(ADMIN_ID, "No photos available to send!")
-            logging.warning("No photos available to send!")
             return
 
-        images = images[:9]  # Send only the first 9 photos
-
+        images = images[:9]
         media_group = []
+
         for img in images:
             with open(img, "rb") as file:
                 media_group.append(telebot.types.InputMediaPhoto(file.read()))
 
         bot.send_media_group(GROUP_CHAT_ID, media_group)
-        logging.info(f"✅ Sent {len(images)} photos to the group!")
 
         for img in images:
-            try:
-                os.remove(img)
-            except Exception as e:
-                logging.error(f"❌ Error deleting file {img}: {e}")
+            os.remove(img)
+
+        logging.info(f"✅ Sent {len(images)} photos to the group!")
 
     except Exception as e:
         logging.error(f"❌ Error sending photos: {e}")
+
+@bot.message_handler(commands=["status"])
+def check_status(message):
+    if message.from_user.id != ADMIN_ID:
+        bot.reply_to(message, "You are not authorized to use this command!")
+        return
+
+    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
+    post_count = photo_count // 9  
+
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("📸 Qancha rasm qoldi", callback_data="photo_count"),
+               InlineKeyboardButton("📤 Rasm qancha postga yetadi", callback_data="post_count"))
+
+    bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
+def refresh_status(call):
+    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
+    post_count = photo_count // 9  
+
+    if call.data == "photo_count":
+        bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}")
+    elif call.data == "post_count":
+        bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta")
 
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message):
@@ -86,4 +108,4 @@ for time_str in SENDING_TIMES:
     scheduler.add_job(send_photos, "cron", hour=hour, minute=minute, timezone=uzbekistan_tz)
 
 scheduler.start()
-# bot.infinity_polling()
+bot.infinity_polling()
