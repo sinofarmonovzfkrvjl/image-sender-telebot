@@ -3,7 +3,7 @@ import logging
 import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telebot import types
 
 BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY"  #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
@@ -24,12 +24,6 @@ SENDING_TIMES = [
 ]
 
 os.path.join(IMAGE_FOLDER)
-
-bot.set_my_commands([
-    types.BotCommand("/start", "Bot statusini ko'rish"),
-    types.BotCommand("/rasmlar_sonini_korish", "Rasmlar soni nechtaligini ko'rish"),
-    types.BotCommand("/postlar_sonini_korish", "Postlar soni nechtaligini ko'rish"),
-])
 
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
@@ -68,14 +62,14 @@ def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         bot.send_message(message.chat.id, "Siz Admin emassiz")
     else:
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
-                   InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
+        markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+        markup.add(KeyboardButton("📸 qolgan rasmlarni ko'rish"),
+                   KeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish"))
 
         bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}\n\n📊 Bot Status:", reply_markup=markup)
 
-@bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
-def see_bot_status(call: types.CallbackQuery):
+@bot.message_handler(func=lambda message: message.text in ["📸 qolgan rasmlarni ko'rish", "📤 Rasmlar qancha postga yetishini ko'rish"])
+def see_bot_status(message: types.Message):
     os.path.join(IMAGE_FOLDER)
     
     if not os.path.exists(IMAGE_FOLDER):
@@ -84,16 +78,14 @@ def see_bot_status(call: types.CallbackQuery):
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
     
     if photo_count == 0:
-        bot.answer_callback_query(call.id, "Rasmlar mavjud emas", show_alert=True)
+        bot.send_message(message.chat.id, "Rasmlar mavjud emas", show_alert=True)
     else:
         post_count = photo_count // 9
         
-        if call.data == "photo_count":
-            bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
-        elif call.data == "post_count":
-            bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
-
-    bot.answer_callback_query(call.id)
+        if message.text == "📸 qolgan rasmlarni ko'rish":
+            bot.send_message(message.chat.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
+        elif message.text == "📤 Rasmlar qancha postga yetishini ko'rish":
+            bot.send_message(message.chat.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
 
 @bot.message_handler(commands=['delete'])
 def delete_all_photos(message: types.Message):
