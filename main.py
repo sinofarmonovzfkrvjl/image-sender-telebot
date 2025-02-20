@@ -23,10 +23,6 @@ SENDING_TIMES = [
     "06:00", "08:50", "11:40", "14:30", "17:20", "20:10", "23:00"
 ]
 
-# @bot.message_handler(commands=["start"])
-# def start(message: types.Message):
-    # bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}")
-
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
