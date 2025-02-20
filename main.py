@@ -66,7 +66,7 @@ def check_status(message: types.Message):
         bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
-def refresh_status(call: types.CallbackQuery):
+def see_bot_status(call: types.CallbackQuery):
     global post_count
     os.path.join(IMAGE_FOLDER)
 
@@ -80,6 +80,7 @@ def refresh_status(call: types.CallbackQuery):
         bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
     elif call.data == "post_count":
         bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
+    bot.answer_callback_query(call.id)
 
 @bot.message_handler(commands=['delete'])
 def delete_all_photos(message: types.Message):
