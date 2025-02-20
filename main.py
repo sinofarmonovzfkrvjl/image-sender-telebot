@@ -67,25 +67,25 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
-    print("handled")
+    bot.send_message(call.message.chat.id, "handled")
     os.path.join(IMAGE_FOLDER)
-    print("photos folder is joined")
+    bot.send_message(call.message.chat.id, "photos folder is joined")
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
-    print(f"length of photos: {photo_count}")
+    bot.send_message(call.message.chat.id, f"length of photos: {photo_count}")
     if photo_count == 0 and photo_count % 9 == 0:
-        print("photo count is 0")
+        bot.send_message(call.message.chat.id, "photo count is 0")
         post_count = 0
     else:
-        print("photo count is not 0")
+        bot.send_message(call.message.chat.id, "photo count is not 0")
         post_count = photo_count // 9
-    print("post count is calculated")
+    bot.send_message(call.message.chat.id, "post count is calculated")
     if call.data == "photo_count":
-        print("photo count")
+        bot.send_message(call.message.chat.id, "photo count")
         bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
     elif call.data == "post_count":
-        print("post count")
+        bot.send_message(call.message.chat.id, "post count")
         bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
-    print("answer sent")
+    bot.send_message(call.message.chat.id, "answer sent")
     bot.answer_callback_query(call.id)
 
 @bot.message_handler(commands=['delete'])
