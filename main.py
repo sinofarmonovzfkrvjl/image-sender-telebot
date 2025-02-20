@@ -26,9 +26,9 @@ SENDING_TIMES = [
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        return
-
-    send_photos()
+        pass
+    else:
+        send_photos()
 
 def send_photos():
     try:
@@ -73,9 +73,9 @@ def refresh_status(call: types.CallbackQuery):
     post_count = photo_count // 9  
 
     if call.data == "photo_count":
-        bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}")
+        bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
     elif call.data == "post_count":
-        bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta")
+        bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
 
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message: types.Message):
@@ -103,4 +103,4 @@ for time_str in SENDING_TIMES:
 
 
 scheduler.start()
-# bot.infinity_polling()
+bot.infinity_polling()
