@@ -12,7 +12,7 @@ ADMIN_ID = [7077167971, 6327823559, 7583614105]
 
 telebot.logger.setLevel(logging.INFO)
 
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = telebot.TeleBot(BOT_TOKEN, parse_mode="MARKDOWN")
 
 uzbekistan_tz = pytz.timezone("Asia/Tashkent")
 
@@ -51,7 +51,7 @@ def send_photos():
                     media_group.append(telebot.types.InputMediaPhoto(file.read()))
 
             if media_group:
-                media_group[0].caption = "Rasmlar"
+                media_group[0].caption = "Link - [Reaksiya bosamiz](https://t.me/+Qn_TbuMIrPU0YjMy)"
                 bot.send_media_group(chat_id=GROUP_CHAT_ID, media=media_group)
 
                 for img in images:
