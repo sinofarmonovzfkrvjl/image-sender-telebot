@@ -36,19 +36,20 @@ def send_photos():
 
         if not images:
             bot.send_message(ADMIN_ID, "rasmlar tugadi")
-            return
+        elif images:
+            images = images[:9]
+            media_group = []
 
-        images = images[:9]
-        media_group = []
+            for img in images:
+                with open(img, "rb") as file:
+                    media_group.append(telebot.types.InputMediaPhoto(file.read(), caption="Rasmlar"))
 
-        for img in images:
-            with open(img, "rb") as file:
-                media_group.append(telebot.types.InputMediaPhoto(file.read(), caption="Rasmlar"))
+            bot.send_media_group(chat_id=GROUP_CHAT_ID, media=media_group)
 
-        bot.send_media_group(chat_id=GROUP_CHAT_ID, media=media_group)
-
-        for img in images:
-            os.remove(img)
+            for img in images:
+                os.remove(img)
+        else:
+            bot.send_message(ADMIN_ID, "ERROR")
 
     except Exception as e:
         logging.error(f"❌ Error sending photos: {e}")
@@ -58,9 +59,6 @@ def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         bot.send_message(message.chat.id, "Siz Admin emassiz")
     else:
-        # photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
-        # post_count = photo_count // 9
-
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
                InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
