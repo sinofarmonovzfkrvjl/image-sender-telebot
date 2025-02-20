@@ -57,20 +57,19 @@ def send_photos():
 def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         bot.send_message(message.chat.id, "Siz Admin emassiz")
-        return
+    else:
+        # photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
+        # post_count = photo_count // 9  
 
-    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
-    post_count = photo_count // 9  
-
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
                InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
 
-    bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
+        bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def refresh_status(call: types.CallbackQuery):
-    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
+    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
     post_count = photo_count // 9  
 
     if call.data == "photo_count":
