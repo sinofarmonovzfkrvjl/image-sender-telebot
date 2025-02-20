@@ -7,7 +7,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot import types
 
 BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
-GROUP_CHAT_ID = "-1002296234497"
+GROUP_CHAT_ID = "-1002274219234"
 
 ADMIN_ID = [7077167971, 6327823559, 7583614105]
 
@@ -67,13 +67,13 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def refresh_status(call: types.CallbackQuery):
-    print("handled")
-    bot.send_message(call.message.chat.id, "handled")
-
     os.path.join(IMAGE_FOLDER)
 
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
-    post_count = photo_count // 9  
+    if photo_count == 0:
+        post_count = 0
+    else:
+        post_count = photo_count // 9
 
     if call.data == "photo_count":
         bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
