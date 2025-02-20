@@ -56,16 +56,15 @@ def send_photos():
 @bot.message_handler(commands=["start"])
 def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
+        bot.send_message(message.chat.id, "Siz Admin emassiz")
         return
-
-    bot.send_message(message.chat.id, "📊 Bot Status:")
 
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
     post_count = photo_count // 9  
 
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("📸 Qancha rasm qoldi", callback_data="photo_count"),
-               InlineKeyboardButton("📤 Rasm qancha postga yetadi", callback_data="post_count"))
+    markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
+               InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
 
     bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
 
