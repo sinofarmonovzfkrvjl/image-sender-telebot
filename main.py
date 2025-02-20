@@ -80,6 +80,18 @@ def refresh_status(call: types.CallbackQuery):
     elif call.data == "post_count":
         bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
 
+@bot.message_handler(commands=['delete'])
+def delete_all_photos(message: types.Message):
+    if message.from_user.id not in ADMIN_ID:
+        pass
+    else:
+        photos = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER)]
+
+        for photo in photos:
+            os.remove(photo)
+
+        bot.reply_to(message, "Rasmlar o'chirildi")
+
 
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message: types.Message):
