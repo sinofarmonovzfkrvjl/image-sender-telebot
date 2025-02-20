@@ -28,7 +28,7 @@ SENDING_TIMES = [
     # bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}")
 
 @bot.message_handler(commands=["send"])
-def send_photos_command(message):
+def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         return
 
@@ -58,7 +58,7 @@ def send_photos():
         logging.error(f"❌ Error sending photos: {e}")
 
 @bot.message_handler(commands=["start"])
-def check_status(message):
+def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         return
 
@@ -74,7 +74,7 @@ def check_status(message):
     bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
-def refresh_status(call):
+def refresh_status(call: types.CallbackQuery):
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
     post_count = photo_count // 9  
 
@@ -84,7 +84,7 @@ def refresh_status(call):
         bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta")
 
 @bot.message_handler(content_types=["photo"])
-def handle_photo(message):
+def handle_photo(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         bot.reply_to(message, "You are not authorized to send photos!")
         return
