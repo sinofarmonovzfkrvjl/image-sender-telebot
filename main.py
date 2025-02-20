@@ -5,9 +5,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY"
+BOT_TOKEN = "7436824817:AAE6g7Ecj-B0HVWT58t_VefKFDMibk4BfMU" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
 GROUP_CHAT_ID = "-1002296234497"
-ADMIN_ID = [7077167971]
+ADMIN_ID = [7077167971, 5230484991, 6327823559, 7583614105]
 
 telebot.logger.setLevel(logging.INFO)
 
@@ -27,9 +27,10 @@ def start(message):
 
 @bot.message_handler(commands=["send"])
 def send_photos_command(message):
-    if message.from_user.id in ADMIN_ID:
+    if message.from_user.id not in ADMIN_ID:
         bot.reply_to(message, "You are not authorized to use this command!")
         return
+
     send_photos()
 
 def send_photos():
@@ -59,7 +60,7 @@ def send_photos():
 
 @bot.message_handler(commands=["status"])
 def check_status(message):
-    if message.from_user.id != ADMIN_ID:
+    if message.from_user.id not in ADMIN_ID:
         bot.reply_to(message, "You are not authorized to use this command!")
         return
 
@@ -84,7 +85,7 @@ def refresh_status(call):
 
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message):
-    if message.from_user.id != ADMIN_ID:
+    if message.from_user.id not in ADMIN_ID:
         bot.reply_to(message, "You are not authorized to send photos!")
         return
 
