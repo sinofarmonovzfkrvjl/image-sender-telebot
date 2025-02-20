@@ -23,6 +23,8 @@ SENDING_TIMES = [
     "06:00", "08:50", "11:40", "14:30", "17:20", "20:10", "23:00"
 ]
 
+os.path.join(IMAGE_FOLDER)
+
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
@@ -67,6 +69,8 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
+    os.path.join(IMAGE_FOLDER)
+
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
 
     if photo_count == 0:
