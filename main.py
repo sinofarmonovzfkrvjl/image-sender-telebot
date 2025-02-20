@@ -63,7 +63,7 @@ def check_status(message: types.Message):
         markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
                InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
 
-        bot.send_message(message.chat.id, "📊 Bot Status:", reply_markup=markup)
+        bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}\n📊 Bot Status:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
@@ -94,7 +94,7 @@ def delete_all_photos(message: types.Message):
     
         bot.reply_to(message, "Rasmlar o'chirildi")
 
-@bot.message_handler(content_types=["photo"])
+@bot.message_handler(content_types=["photo", "document"])
 def handle_photo(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         pass
