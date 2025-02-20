@@ -101,4 +101,4 @@ for time_str in SENDING_TIMES:
 
 
 scheduler.start()
-bot.infinity_polling()
+# bot.infinity_polling()
