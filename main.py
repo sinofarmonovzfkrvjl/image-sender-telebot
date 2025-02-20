@@ -68,16 +68,13 @@ def check_status(message: types.Message):
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
     os.path.join(IMAGE_FOLDER)
+    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
 
-    photo_count = len([img for img in os.listdir(IMAGE_FOLDER)])
-    if photo_count == 0 and photo_count % 9 == 0:
-        post_count = 0
+    if photo_count == 0:
+        bot.answer_callback_query(call.message.chat.id, "❌ No photos available in the folder!", show_alert=True)
     else:
-        post_count = photo_count // 9
-    if call.data == "photo_count":
-        bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
-    elif call.data == "post_count":
-        bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
+        bot.answer_callback_query(call.message.chat.id, f"📸 Total photos available: {photo_count}", show_alert=True)
+
     bot.answer_callback_query(call.id)
 
 @bot.message_handler(commands=['delete'])
