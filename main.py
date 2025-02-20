@@ -70,9 +70,9 @@ def check_status(message: types.Message):
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
     os.path.join(IMAGE_FOLDER)
-
+    bot.send_message("working")
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
-
+    bot.send_message("working")
     if photo_count == 0:
         bot.answer_callback_query(call.message.chat.id, "Rasmlar mavjud emas", show_alert=True)
     else:
