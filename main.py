@@ -59,7 +59,7 @@ def check_status(message: types.Message):
         bot.send_message(message.chat.id, "Siz Admin emassiz")
     else:
         # photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
-        # post_count = photo_count // 9  
+        # post_count = photo_count // 9
 
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
@@ -80,21 +80,20 @@ def refresh_status(call: types.CallbackQuery):
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        bot.reply_to(message, "You are not authorized to send photos!")
-        return
+        pass
+    else:
+        if not os.path.exists(IMAGE_FOLDER):
+            os.makedirs(IMAGE_FOLDER)
 
-    if not os.path.exists(IMAGE_FOLDER):
-        os.makedirs(IMAGE_FOLDER)
+        photo = message.photo[-1]
+        file_info = bot.get_file(photo.file_id)
+        downloaded_file = bot.download_file(file_info.file_path)
+        file_path = os.path.join(IMAGE_FOLDER, file_info.file_path.split("/")[-1])
 
-    photo = message.photo[-1]
-    file_info = bot.get_file(photo.file_id)
-    downloaded_file = bot.download_file(file_info.file_path)
-    file_path = os.path.join(IMAGE_FOLDER, file_info.file_path.split("/")[-1])
+        with open(file_path, 'wb') as new_file:
+            new_file.write(downloaded_file)
 
-    with open(file_path, 'wb') as new_file:
-        new_file.write(downloaded_file)
-
-    bot.reply_to(message, "Photo saved!")
+        bot.reply_to(message, "Rasm Saqlandi")
 
 scheduler = BackgroundScheduler()
 
