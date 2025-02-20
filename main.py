@@ -70,7 +70,7 @@ def see_bot_status(call: types.CallbackQuery):
     bot.send_message(call.message.chat.id, "handled")
     os.path.join(IMAGE_FOLDER)
     bot.send_message(call.message.chat.id, "photos folder is joined")
-    photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
+    photo_count = len([img for img in os.listdir(IMAGE_FOLDER)])
     bot.send_message(call.message.chat.id, f"length of photos: {photo_count}")
     if photo_count == 0 and photo_count % 9 == 0:
         bot.send_message(call.message.chat.id, "photo count is 0")
