@@ -6,7 +6,7 @@ import pytz
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot import types
 
-BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
+BOT_TOKEN = "7436824817:AAE6g7Ecj-B0HVWT58t_VefKFDMibk4BfMU" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
 GROUP_CHAT_ID = "-1002274219234"
 
 ADMIN_ID = [7077167971, 6327823559, 7583614105]
@@ -67,6 +67,7 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def refresh_status(call: types.CallbackQuery):
+    global post_count
     os.path.join(IMAGE_FOLDER)
 
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
@@ -89,9 +90,8 @@ def delete_all_photos(message: types.Message):
 
         for photo in photos:
             os.remove(photo)
-
+    
         bot.reply_to(message, "Rasmlar o'chirildi")
-
 
 @bot.message_handler(content_types=["photo"])
 def handle_photo(message: types.Message):
@@ -119,4 +119,4 @@ for time_str in SENDING_TIMES:
 
 
 scheduler.start()
-# bot.infinity_polling()
+bot.infinity_polling(skip_pending=True)
