@@ -5,7 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-BOT_TOKEN = "7436824817:AAE6g7Ecj-B0HVWT58t_VefKFDMibk4BfMU" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
+BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
 GROUP_CHAT_ID = "-1002296234497"
 
 ADMIN_ID = [7077167971, 5230484991, 6327823559, 7583614105]
