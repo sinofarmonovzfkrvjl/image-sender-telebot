@@ -67,19 +67,25 @@ def check_status(message: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
-    global post_count
+    logging.info("handled")
     os.path.join(IMAGE_FOLDER)
-
+    logging.info("photos folder is joined")
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
+    logging.info(f"length of photos: {photo_count}")
     if photo_count == 0 and photo_count % 9 == 0:
+        logging.info("photo count is 0")
         post_count = 0
     else:
+        logging.info("photo count is not 0")
         post_count = photo_count // 9
-
+    logging.info("post count is calculated")
     if call.data == "photo_count":
+        logging.info("photo count")
         bot.answer_callback_query(call.id, f"📸 Qolgan rasmlar: {photo_count}", show_alert=True)
     elif call.data == "post_count":
+        logging.info("post count")
         bot.answer_callback_query(call.id, f"📤 Post qilishga yetadi: {post_count} marta", show_alert=True)
+    logging.info("answer sent")
     bot.answer_callback_query(call.id)
 
 @bot.message_handler(commands=['delete'])
