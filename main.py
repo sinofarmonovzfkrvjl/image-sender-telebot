@@ -70,7 +70,7 @@ def refresh_status(call: types.CallbackQuery):
     os.path.join(IMAGE_FOLDER)
 
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
-    if photo_count == 0:
+    if photo_count == 0 and photo_count % 9 == 0:
         post_count = 0
     else:
         post_count = photo_count // 9
