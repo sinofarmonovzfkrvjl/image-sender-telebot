@@ -25,6 +25,12 @@ SENDING_TIMES = [
 
 os.path.join(IMAGE_FOLDER)
 
+bot.set_my_commands([
+    types.BotCommand("/start", "Bot statusini ko'rish"),
+    types.BotCommand("/rasmlar_sonini_korish", "Rasmlar soni nechtaligini ko'rish"),
+    types.BotCommand("/postlar_sonini_korish", "Postlar soni nechtaligini ko'rish"),
+])
+
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
@@ -62,11 +68,6 @@ def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         bot.send_message(message.chat.id, "Siz Admin emassiz")
     else:
-        bot.set_my_commands([
-            types.BotCommand("/start", "Bot statusini ko'rish"),
-            types.BotCommand("/rasmlar_sonini_korish", "Rasmlar soni nechtaligini ko'rish"),
-            types.BotCommand("/postlar_sonini_korish", "Postlar soni nechtaligini ko'rish"),
-        ])
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
                    InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
