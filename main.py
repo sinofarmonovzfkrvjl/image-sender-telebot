@@ -4,6 +4,7 @@ import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot import types
 
 BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
 GROUP_CHAT_ID = "-1002296234497"
@@ -22,14 +23,13 @@ SENDING_TIMES = [
     "06:00", "08:50", "11:40", "14:30", "17:20", "20:10", "23:00"
 ]
 
-@bot.message_handler(commands=["start"])
-def start(message):
-    bot.send_message(message.chat.id, "Bot started!")
+# @bot.message_handler(commands=["start"])
+# def start(message: types.Message):
+    # bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}")
 
 @bot.message_handler(commands=["send"])
 def send_photos_command(message):
     if message.from_user.id not in ADMIN_ID:
-        bot.reply_to(message, "You are not authorized to use this command!")
         return
 
     send_photos()
@@ -39,7 +39,7 @@ def send_photos():
         images = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))]
 
         if not images:
-            bot.send_message(ADMIN_ID, "No photos available to send!")
+            bot.send_message(ADMIN_ID, "rasmlar tugadi")
             return
 
         images = images[:9]
@@ -54,16 +54,15 @@ def send_photos():
         for img in images:
             os.remove(img)
 
-        logging.info(f"✅ Sent {len(images)} photos to the group!")
-
     except Exception as e:
         logging.error(f"❌ Error sending photos: {e}")
 
-@bot.message_handler(commands=["status"])
+@bot.message_handler(commands=["start"])
 def check_status(message):
     if message.from_user.id not in ADMIN_ID:
-        bot.reply_to(message, "You are not authorized to use this command!")
         return
+
+    bot.send_message(message.chat.id, "📊 Bot Status:")
 
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png"))])
     post_count = photo_count // 9  
@@ -109,5 +108,6 @@ for time_str in SENDING_TIMES:
     hour, minute = map(int, time_str.split(":"))
     scheduler.add_job(send_photos, "cron", hour=hour, minute=minute, timezone=uzbekistan_tz)
 
+
 scheduler.start()
-bot.infinity_polling()
+# bot.infinity_polling()
