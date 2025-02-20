@@ -6,7 +6,7 @@ import pytz
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot import types
 
-BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY" #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
+BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY"  #  actual token: 8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY
 GROUP_CHAT_ID = "-1002274219234"
 
 ADMIN_ID = [7077167971, 6327823559, 7583614105]
@@ -28,7 +28,8 @@ os.path.join(IMAGE_FOLDER)
 @bot.message_handler(commands=["send"])
 def send_photos_command(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        pass
+        bot.send_message(message.chat.id, "❌ Siz Admin emassiz")
+        return
     else:
         send_photos()
 
@@ -59,20 +60,19 @@ def send_photos():
 @bot.message_handler(commands=["start"])
 def check_status(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        bot.send_message(message.chat.id, "Siz Admin emassiz")
+        bot.send_message(message.chat.id, "❌ Siz Admin emassiz")
     else:
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("📸 qolgan rasmlarni ko'rish", callback_data="photo_count"),
-               InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
+                   InlineKeyboardButton("📤 Rasmlar qancha postga yetishini ko'rish", callback_data="post_count"))
 
         bot.send_message(message.chat.id, f"Salom {message.from_user.full_name}\n\n📊 Bot Status:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data in ["photo_count", "post_count"])
 def see_bot_status(call: types.CallbackQuery):
     os.path.join(IMAGE_FOLDER)
-    bot.send_message("working")
     photo_count = len([img for img in os.listdir(IMAGE_FOLDER) if img.lower().endswith(("jpg", "jpeg", "png", "webp"))])
-    bot.send_message("working")
+    
     if photo_count == 0:
         bot.answer_callback_query(call.message.chat.id, "Rasmlar mavjud emas", show_alert=True)
     else:
@@ -85,11 +85,11 @@ def see_bot_status(call: types.CallbackQuery):
 
     bot.answer_callback_query(call.id)
 
-
 @bot.message_handler(commands=['delete'])
 def delete_all_photos(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        pass
+        bot.send_message(message.chat.id, "❌ Siz Admin emassiz")
+        return
     else:
         photos = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER)]
 
@@ -101,7 +101,7 @@ def delete_all_photos(message: types.Message):
 @bot.message_handler(content_types=["photo", "document"])
 def handle_photo(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        pass
+        return
     else:
         if not os.path.exists(IMAGE_FOLDER):
             os.makedirs(IMAGE_FOLDER)
@@ -121,7 +121,6 @@ scheduler = BackgroundScheduler()
 for time_str in SENDING_TIMES:
     hour, minute = map(int, time_str.split(":"))
     scheduler.add_job(send_photos, "cron", hour=hour, minute=minute, timezone=uzbekistan_tz)
-
 
 scheduler.start()
 # bot.infinity_polling(skip_pending=True)
