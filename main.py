@@ -7,8 +7,8 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telebot import types
 
 BOT_TOKEN = "8120956703:AAFgC0YCApZAR-149EXMEISq00ZNzvjAYRY"
-GROUP_CHAT_ID = "-1002274219234"
-ADMIN_ID = [7077167971, 6327823559, 7583614105]
+GROUP_CHAT_ID = "@Glavniga_suratlar_RASMIY"
+ADMIN_ID = [5230484991, 7077167971, 6327823559, 7583614105]
 
 telebot.logger.setLevel(logging.INFO)
 
@@ -106,34 +106,31 @@ def see_bot_status(message: types.Message):
 def delete_all_photos(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
         bot.send_message(message.chat.id, "Siz Admin emassiz")
-        return
-
-    photos = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER)]
-    for photo in photos:
-        os.remove(photo)
+    else:
+        photos = [os.path.join(IMAGE_FOLDER, img) for img in os.listdir(IMAGE_FOLDER)]
+        for photo in photos:
+            os.remove(photo)
     
     bot.reply_to(message, "Rasmlar o'chirildi")
 
-@bot.message_handler(content_types=["photo"])
+@bot.message_handler(content_types=["photo", "document"])
 def handle_photo(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
-        return
+        pass
+    else:
+        if not os.path.exists(IMAGE_FOLDER):
+            os.makedirs(IMAGE_FOLDER)
 
-    if not os.path.exists(IMAGE_FOLDER):
-        os.makedirs(IMAGE_FOLDER)
-
-    try:
         photo = message.photo[-1]
         file_info = bot.get_file(photo.file_id)
         downloaded_file = bot.download_file(file_info.file_path)
-        file_path = os.path.join(IMAGE_FOLDER, f"photo_{message.date}.jpg")
+        
+        file_path = os.path.join(IMAGE_FOLDER, f"{file_info.file_id}.jpg")
 
         with open(file_path, 'wb') as new_file:
             new_file.write(downloaded_file)
 
         bot.reply_to(message, "Rasm Saqlandi")
-    except Exception as e:
-        bot.reply_to(message, f"Xatolik yuz berdi: {str(e)}")
 
 scheduler = BackgroundScheduler()
 
@@ -142,4 +139,4 @@ for time_str in SENDING_TIMES:
     scheduler.add_job(send_photos, "cron", hour=hour, minute=minute, timezone=uzbekistan_tz)
 
 scheduler.start()
-# bot.infinity_polling(skip_pending=True)
+bot.infinity_polling(skip_pending=True)
