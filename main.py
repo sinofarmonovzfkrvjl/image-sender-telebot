@@ -113,6 +113,10 @@ def delete_all_photos(message: types.Message):
     
     bot.reply_to(message, "Rasmlar o'chirildi")
 
+@bot.message_handler(commands=['jadval'])
+def jadvalni_jonatish(message: types.Message):
+    bot.send_message(message.chat.id, "06:00, 08:50, 11:40, 14:30, 17:20, 20:10, 23:00")
+
 @bot.message_handler(content_types=["photo", "document"])
 def handle_photo(message: types.Message):
     if message.from_user.id not in ADMIN_ID:
